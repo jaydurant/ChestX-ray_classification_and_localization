@@ -30,7 +30,7 @@ print(args)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-trainx, trainy, testx, testy, valx, valy = generate_stratified_test_val_train_datasets("./padchest_img_labels.csv")
+trainx, trainy, testx, testy, valx, valy = generate_stratified_test_val_train_datasets("./padchest_openi_labels.csv")
 
 train_transform = transforms.Compose([
     #transforms.RandomAdjustSharpness(sharpness_factor=0.75),

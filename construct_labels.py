@@ -4,6 +4,7 @@ import re
 import os
 import ast
 import math
+import xml.etree.ElementTree as ET
 import numpy as np
 from os.path import exists
 #from models.selected_labels import selected_labels
@@ -44,6 +45,73 @@ def generate_label_map(csv_file):
                 label_dict[label_str_clean] = current_parent
         
     return (label_dict, len(label_dict))
+
+def edit_labels_openi(dir):
+    data = {"Labels": [], "ImageID":[]}
+    for filename in os.listdir(dir):
+        f = os.path.join(dir, filename)
+        tree = ET.parse(f)
+        images = tree.findall(".//parentImage")
+        impression_sentence = tree.find(".//*[@Label='IMPRESSION']")
+        
+
+        for image in images:
+            image_file = image.attrib['id']
+            data['Labels'].append(image_file)
+            data['ImageID'].append(impression_sentence)
+            
+    df = pd.DataFrame(data)
+    df.to_csv('openi_image_labels.csv')
+
+
+def combine_ds_labels(file_label):
+    padchest_labels = pd.read_csv("./padchest_img_labels.csv")
+    openi_labels = ["No Finding", "Enlarged Cardiomediastinum",
+     "Cardiomegaly", "Lung Lesion", "Lung Opacity", "Edema", "Consolidation", "Pneumonia", "Atelectasis", "Pneumothorax", "Pleural Effusion", "Plerual Other", "Fracture", "Support Devices"]
+    df = pd.read_csv(file_label)
+    rows_to_add = []
+    for row_index in df.index:
+        new_label_arrays = []
+        for i, label in enumerate(openi_labels):
+            row_value = df.at[row_index, label]
+
+            if row_value and i == 0:
+                new_label_arrays.append("normal")
+            elif row_value and i == 1:
+                new_label_arrays.append("other findings")
+            elif row_value and i == 2:
+                new_label_arrays.append("cardiomegaly")
+            elif row_value and i == 3:
+                new_label_arrays.append("mass")
+            elif row_value and i==4:
+                new_label_arrays.append("other findings")
+            elif row_value and i==5:
+                new_label_arrays.append("pulmonary edema")
+            elif row_value and i==6:
+                new_label_arrays.append("other findings")
+            elif row_value and i==7:
+                new_label_arrays.append("pneumonia")
+            elif row_value and i==8:
+                new_label_arrays.append("atelectasis")
+            elif row_value and i==9:
+                new_label_arrays.append("pneumothorax")
+            elif row_value and i==10:
+                new_label_arrays.append("pleural effusion")
+            elif row_value and i==11:
+                new_label_arrays.append("other findings")
+            elif row_value and i==12:
+                new_label_arrays.append("thoracic cage deformation")
+            elif row_value and i==13:
+                new_label_arrays.append("electrical devices")
+        new_label_arrays = list(set(new_label_arrays))
+        rows_to_add.append([df.at[row_index,"ImageId"], new_label_arrays])
+    padchest_labels.append(rows_to_add)
+
+    padchest_labels.to_csv("padchest_openi_labels.csv")
+    print("finished combining labels")
+
+
+
 
 
 def edit_labels_csv_file_padchest(annontated_image_csv_file, label_csv_file ):
@@ -118,6 +186,7 @@ def generate_test_val_train_datasets(file):
     print("Finished  building train, val, and test sets")
     
     return (train, val, test)
+
 
 def generate_stratified_test_val_train_datasets(file):
     df = pd.read_csv(file)

@@ -32,13 +32,21 @@ python download_images.py
 
 You will need to updte the bucket variable name in the download_images.py file.
 
-4. Next take the PadChest label files and move them to the root directory and run:
+4. Next take the PadChest label files and move them to the root directory; in addition ensure that the files for the openi labels have been unzipped and placed at the home directory of this repo:
 
 ```
 python parselabelfile.py
 ```
 
-5. Now access the 
+5. The padchest file will now be ready but the OpenI labels will not be ready to be used. By utilizing the [chexpert labeler](https://github.com/stanfordmlgroup/chexpert-labeler) a labeled file can be produced. Move the labeled file to the home directory.
+
+6. Now run combine the OpenI and PadChest Label files by running
+```
+python combinelabels.py
+```
+
+7. 
+
 
 
 
