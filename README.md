@@ -45,7 +45,11 @@ python parselabelfile.py
 python combinelabels.py
 ```
 
-7. 
+7. Finally the test and training runs can be executed with (values for args can be inspected in the traintest file):
+
+```
+python traintest.py --is_training 1 --epochs 20 etc...
+```
 
 
 
