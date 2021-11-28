@@ -19,7 +19,14 @@ parser = argparse.ArgumentParser(description='PyTorch X-ray classification model
 parser.add_argument("--is_training", type=int, default=1)
 parser.add_argument("--epochs",type=int, default=20)
 parser.add_argument("--batch_size", type=int, default=20)
+parser.add_argument("--pretrained", type=int,default=0)
+parser.add_argument("--load_model", type=str, default="")
+parser.add_argument("--save_model", type=str, default="./saved_models/newmodel.pth")
+parser.add_argument("--lr", type=float, default=6.58e-4)
+parser.add_argument("--model", type=str, default="resnet")
 
+args = parser.parse_args()
+print(args)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -36,11 +43,9 @@ testval_transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-
-EPOCHS = 5
-EPOCHS = 5
-BATCH_SIZE = 20
-LR = 6.58E-04
+EPOCHS = args.epochs
+BATCH_SIZE = args.batch_size
+LR = args.lr
 
 
 train_dataset = XrayStratifiedDataset("./data", trainx, trainy, train_transform)
@@ -59,27 +64,31 @@ print(len(test_dataset), "test")
 num_classes = len(selected_labels)
 
 #access model
-resnet_model = Resnet50(num_classes)
-resnet_model.to(device)
+model = None
+params = None
+if args.model == "resnet":
+    resnet_model = Resnet50(num_classes)
+    resnet_model.to(device)
 
-#use as feature extractor turn in function
-for param in resnet_model.parameters():
-    param.requires_grad = False
+    #use as feature extractor turn in function
+    for param in resnet_model.parameters():
+        param.requires_grad = False
 
-for name, param in resnet_model.named_parameters():
-    if "layer4.2.conv3" in name:
-        param.requires_grad = True
-    if "layer4.2.bn3" in name:
-        param.requires_grad = True
-    if "fc" in name:
-        param.requires_grad = True
+    for name, param in resnet_model.named_parameters():
+        if "layer4.2.conv3" in name:
+            param.requires_grad = True
+        if "layer4.2.bn3" in name:
+            param.requires_grad = True
+        if "fc" in name:
+            param.requires_grad = True
 
-params = list(resnet_model.fc.parameters()) + list(resnet_model.layer4[2].bn3.parameters()) + list(resnet_model.layer4[2].conv3.parameters())
+    params = list(resnet_model.fc.parameters()) + list(resnet_model.layer4[2].bn3.parameters()) + list(resnet_model.layer4[2].conv3.parameters())
+    model = resnet_model
 #end feature extractor
 
 
 criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.Adam(params, lr=LR)
+optimizer = optim.Adam(params, lr=LR, weight_decay=1e-4)
 
 #function used for early stopping
 def checkstop(arr):
@@ -167,10 +176,6 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
 
     return model  
 
-print("start training")
-runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_models/saved_model.pth")
-print("finished training")
-
 
 def runtest(model, criterion, testloader, iters):
     predict_arr = []
@@ -207,3 +212,12 @@ def runtest(model, criterion, testloader, iters):
     #df.to_csv("./results.csv")
 #resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
 #runtest(resnet_model, criterion, testloader, 100)
+
+if args.is_training:
+    print("start training")
+    runtrainval(model, criterion, optimizer, EPOCHS, trainloader, valloader, path=args.save_model)
+    print("finished training")
+else:
+    print("start test")
+    runtest(model, criterion, testloader, iters=100)
+    print("finished test")

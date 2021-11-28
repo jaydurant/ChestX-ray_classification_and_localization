@@ -3,6 +3,8 @@ import zipfile
 import os
 import numpy as np
 import torch
+import cv2
+import pydicom
 import torch.nn as nn
 import torchvision.transforms as transforms
 from torchvision.io import read_image
@@ -16,7 +18,7 @@ curr_dir = os.getcwd()
  
 print(curr_dir)
 transform = transforms.Compose([
-   transforms.Resize((150,150))
+   transforms.Resize((250,250))
 ])
  
 def check_dir_exists(directory):
@@ -39,6 +41,11 @@ def extract_files(file):
            extracted_files.append(basename)
    return extracted_files
  
+def convert_dicom_to_png(file):
+    ds = pydicom.read_file(file)
+    img = ds.pixel_array
+    return img
+
 def preprocess_images(bucket, filename, dest, img_size=250):
     """Process image samples to decrease image sample size"""
     #download images zipfile
@@ -50,7 +57,11 @@ def preprocess_images(bucket, filename, dest, img_size=250):
         try:
             image_path = os.path.join(curr_dir,"data_raw", image_fp)
             #print(image_path)
-            image_obj = Image.open(image_path)
+            image_obj = None
+            if image_path.endswith(".dcm"):
+                image_obj =  convert_dicom_to_png(image_path)
+            else:
+                image_obj = Image.open(image_path)
             resized_image = transform(image_obj)
             resized_image.save(Path('data') / image_fp, 'PNG')
         except Exception as e:
@@ -81,7 +92,6 @@ def download_process_images(bucket):
             os.remove(os.path.join(raw_data_path, f))
 
 bucket = "xray_samples"
-#download_process_images(bucket)
 
 def resize_images(dir):
     count = 0
