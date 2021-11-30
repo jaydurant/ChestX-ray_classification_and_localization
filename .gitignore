@@ -50,7 +50,7 @@ coverage.xml
 docs/_build/
  
 #data
-data/
-data_raw/
+data/*
+data_raw/*
  
 *.zip
