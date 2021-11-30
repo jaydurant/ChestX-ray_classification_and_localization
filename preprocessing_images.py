@@ -58,15 +58,15 @@ zip_arr = list(range(0,51))
 zip_arr.append(54)
 
 def download_process_images(bucket):
-    for i in [0]:
+    for i in zip_arr:
         
         filename = "{}.zip".format(i)
         newzip_path = os.path.join(curr_dir, filename)
 
-        #preprocess_images(bucket, filename, newzip_path)
+        preprocess_images(bucket, filename, newzip_path)
         
         #remove zip file
-        #os.remove(newzip_path)
+        os.remove(newzip_path)
         #remove previous images in data_raw directory
         raw_data_path = os.path.join(curr_dir, "data_raw")
         
