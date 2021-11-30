@@ -70,7 +70,7 @@ def download_process_images(bucket):
         raw_data_path = os.path.join(curr_dir, "data_raw")
         
         for f in os.listdir(raw_data_path):
-            os.remove(os.path.join())
+            os.remove(os.path.join(raw_data_path, f))
 
 bucket = "xray_samples"
 download_process_images(bucket)
