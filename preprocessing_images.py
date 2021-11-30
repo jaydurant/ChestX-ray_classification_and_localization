@@ -1,4 +1,4 @@
-#from gcp_utils import download_blob
+from gs_utils import download_blob
 import zipfile
 import os
 import numpy as np
