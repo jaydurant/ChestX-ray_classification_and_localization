@@ -36,10 +36,10 @@ def extract_files(file):
            extracted_files.append(basename)
    return extracted_files
  
-def preproces_images(bucket, filename, dest, img_size=250):
+def preprocess_images(bucket, filename, dest, img_size=250):
    """Process image samples to decrease image sample size"""
    #download images zipfile
-   #download_blob(bucket, filename, dest)
+   download_blob(bucket, filename, dest)
  
    image_samples = extract_files(dest)
  
@@ -50,6 +50,35 @@ def preproces_images(bucket, filename, dest, img_size=250):
        resized_image = transform(image_obj)
        resized_image.save(Path('data') / image_fp, 'PNG')
  
+#create directories to hold raw image data and transformed data
 check_dir_exists("data_raw")
 check_dir_exists("data")
-preproces_images("", "","sample.zip")
+
+zip_arr = list(range(0,51))
+zip_arr.append(54)
+
+def download_process_images(bucket):
+    for i in [0]:
+        filename = "{}.zip".format(i)
+        newzip_path = os.path.join(curr_dir, filename)
+
+        preprocess_images(bucket, filename, newzip_path)
+        
+        #remove zip file
+        os.remove(newzip_path)
+        #remove previous images in data_raw directory
+        raw_data_path = os.path.join(curr_dir, "data_raw")
+        
+        for f in os.listdir(raw_data_path):
+            os.remove(os.path.join())
+
+bucket = "xray_samples"
+download_process_images(bucket)
+
+
+
+
+
+
+
+
