@@ -45,7 +45,7 @@ def preprocess_images(bucket, filename, dest, img_size=250):
  
    for image_fp in image_samples:
        image_path = os.path.join(curr_dir,"data_raw", image_fp)
-       print(image_path)
+       #print(image_path)
        image_obj = Image.open(image_path)
        resized_image = transform(image_obj)
        resized_image.save(Path('data') / image_fp, 'PNG')
@@ -63,8 +63,9 @@ def download_process_images(bucket):
         filename = "{}.zip".format(i)
         newzip_path = os.path.join(curr_dir, filename)
 
+        print("preprocess images from zip {}".format(i))
         preprocess_images(bucket, filename, newzip_path)
-        
+        print("finish preprocess from zip {}".format(i))
         #remove zip file
         os.remove(newzip_path)
         #remove previous images in data_raw directory
