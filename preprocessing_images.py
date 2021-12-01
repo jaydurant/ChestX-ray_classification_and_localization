@@ -8,6 +8,9 @@ import torchvision.transforms as transforms
 from torchvision.io import read_image
 from pathlib import Path
 from PIL import Image
+from PIL import ImageFile
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
  
 curr_dir = os.getcwd()
  
@@ -37,24 +40,27 @@ def extract_files(file):
    return extracted_files
  
 def preprocess_images(bucket, filename, dest, img_size=250):
-   """Process image samples to decrease image sample size"""
-   #download images zipfile
-   download_blob(bucket, filename, dest)
- 
-   image_samples = extract_files(dest)
- 
-   for image_fp in image_samples:
-       image_path = os.path.join(curr_dir,"data_raw", image_fp)
-       #print(image_path)
-       image_obj = Image.open(image_path)
-       resized_image = transform(image_obj)
-       resized_image.save(Path('data') / image_fp, 'PNG')
- 
+    """Process image samples to decrease image sample size"""
+    #download images zipfile
+    download_blob(bucket, filename, dest)
+
+    image_samples = extract_files(dest)
+
+    for image_fp in image_samples:
+        try:
+            image_path = os.path.join(curr_dir,"data_raw", image_fp)
+            #print(image_path)
+            image_obj = Image.open(image_path)
+            resized_image = transform(image_obj)
+            resized_image.save(Path('data') / image_fp, 'PNG')
+        except Exception as e:
+            print(e)
+            print(image_fp)
 #create directories to hold raw image data and transformed data
 check_dir_exists("data_raw")
 check_dir_exists("data")
 
-zip_arr = list(range(0,51))
+zip_arr = list(range(13,51))
 zip_arr.append(54)
 
 def download_process_images(bucket):
@@ -76,11 +82,3 @@ def download_process_images(bucket):
 
 bucket = "xray_samples"
 download_process_images(bucket)
-
-
-
-
-
-
-
-
