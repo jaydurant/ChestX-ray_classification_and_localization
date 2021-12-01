@@ -221,3 +221,5 @@ else:
     print("start test")
     runtest(model, criterion, testloader, iters=100)
     print("finished test")
+
+print("finished")
