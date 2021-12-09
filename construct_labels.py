@@ -4,6 +4,7 @@ import re
 import os
 import ast
 from models.selected_labels import selected_labels
+from sklearn.model_selection import train_test_split
 
 parent_separator_1 = "├──"
 parent_separator_2 = "└──"
@@ -60,8 +61,9 @@ def edit_labels_csv_file_padchest(annontated_image_csv_file, label_csv_file ):
             new_labels = ["other findings"]
         
         df.at[row_index, "Labels"] = new_labels
-    curr_dir = os.getcwd()
+        
     df.drop(df.columns.difference(['ImageID','Labels']), 1, inplace=True)
+    curr_dir = os.getcwd()
     df.to_csv(os.path.join(curr_dir, "padchest_img_labels.csv"), index=False)
     print("finished editing ")
 
