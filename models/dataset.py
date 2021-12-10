@@ -24,6 +24,7 @@ class XrayDataset(Dataset):
         sample_labels = self.dataset.iloc[idx, 1]
         print(sample_labels)
         sample = Image.open(img_path)
+        print(sample.mode)
 
         if self.transform:
             sample = self.transform(sample)
