@@ -31,6 +31,7 @@ class XrayDataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
         print(type(sample))
+        sample.float()
         return sample, sample_labels
 
 
