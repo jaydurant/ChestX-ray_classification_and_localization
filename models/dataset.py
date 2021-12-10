@@ -30,7 +30,7 @@ class XrayDataset(Dataset):
         print(self.transform)
         if self.transform:
             sample = self.transform(sample)
-
+        print(type(sample))
         return sample, sample_labels
 
 
