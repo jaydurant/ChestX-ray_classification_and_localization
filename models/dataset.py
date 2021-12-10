@@ -22,15 +22,13 @@ class XrayDataset(Dataset):
 
         img_path = os.path.join(self.root_dir, self.dataset.iloc[idx, 0])
         sample_labels = self.dataset.iloc[idx, 1]
-
-        labels = self.mlb.transform([sample_labels])[0]
-
+        print(sample_labels)
         sample = Image.open(img_path)
 
         if self.transform:
             sample = self.transform(sample)
 
-        return sample, labels
+        return sample, sample_labels
 
 
 
