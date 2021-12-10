@@ -70,7 +70,7 @@ optimizer = optim.Adam(params, lr=LR)
 
 def train(model, criterion, optimizer, epochs, trainloader, valloader):
 
-    for epoch in epochs:
+    for epoch in range(epochs):
         training_loss = 0.0
         val_loss = 0.0
 
@@ -86,8 +86,8 @@ def train(model, criterion, optimizer, epochs, trainloader, valloader):
             training_loss += loss.item()
 
             if i % 2 == 1:
-                print("Epoch {} Train - Loss: {} ".format())
-
+                print("Epoch {} Train - Loss: {} ".format(epoch + 1, training_loss / 2))
+                training_loss = 0.0
 
 print("start training")
 train(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader)
