@@ -24,7 +24,7 @@ class XrayDataset(Dataset):
         sample_labels = self.dataset.iloc[idx, 1]
         print(sample_labels)
         sample = Image.open(img_path)
-        sample = sample.convert("L")
+        sample = sample.convert("RGB")
         print(sample.mode)
 
         if self.transform:
