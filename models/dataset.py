@@ -22,16 +22,16 @@ class XrayDataset(Dataset):
 
         img_path = os.path.join(self.root_dir, self.dataset.iloc[idx, 0])
         sample_labels = self.dataset.iloc[idx, 1]
-        print(sample_labels)
+        #print(sample_labels)
         sample = Image.open(img_path)
         sample = sample.convert("RGB")
-        print(sample.mode)
+        #print(sample.mode)
 
-        print(self.transform)
+        #print(self.transform)
         if self.transform:
             sample = self.transform(sample)
-        print(type(sample))
-        print(sample)
+        #print(type(sample))
+        #print(sample)
         return sample, sample_labels
 
 

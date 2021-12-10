@@ -86,7 +86,7 @@ def train(model, criterion, optimizer, epochs, trainloader, valloader):
             training_loss += loss.item()
 
             if i % 2 == 1:
-                print("Epoch {} Train - Loss: {} ".format(epoch + 1, training_loss / 2))
+                print("Epoch {} Train Step {}- Loss: {} ".format(epoch + 1, i + 1 , training_loss / 2))
                 training_loss = 0.0
 
 print("start training")
