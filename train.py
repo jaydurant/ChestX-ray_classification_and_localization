@@ -15,7 +15,7 @@ train, val, test = generate_test_val_train_datasets("./padchest_img_labels.csv")
 
 
 train_transform = transforms.Compose([
-    transforms.RandomAdjustSharpness(sharpness_factor=0.75),
+    #transforms.RandomAdjustSharpness(sharpness_factor=0.75),
     transforms.RandomRotation(degrees=(0,180)),
     transforms.RandomInvert(),
     transforms.PILToTensor()
