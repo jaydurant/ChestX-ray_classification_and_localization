@@ -77,9 +77,9 @@ def train(model, criterion, optimizer, epochs, trainloader, valloader):
         for i, data in enumerate(trainloader):
             inputs, labels = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
-            print(type(labels))
+
             outputs = model(inputs)
-            loss = criterion(outputs, labels)
+            loss = criterion(outputs, labels.float())
             loss.backward()
             optimizer.step()
         
