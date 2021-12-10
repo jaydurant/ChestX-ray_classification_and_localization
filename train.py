@@ -26,7 +26,7 @@ testval_transform = transforms.Compose([
 ])
 
 
-Epochs = 20
+EPOCHS = 20
 BATCH_SIZE = 10
 LR = 1e-3
 
@@ -38,6 +38,10 @@ test_dataset = XrayDataset("./data", test, testval_transform)
 trainloader = DataLoader(dataset=train_dataset, batch_size = BATCH_SIZE)
 valloader = DataLoader(dataset=val_dataset, batch_size = BATCH_SIZE)
 testloader = DataLoader(dataset=test_dataset, batch_size = BATCH_SIZE)
+
+print(len(train_dataset), "train")
+print(len(val_dataset), "val")
+print(len(test_dataset), "test")
 
 
 num_classes = len(selected_labels)
@@ -64,9 +68,6 @@ params = list(resnet_model.fc.parameters()) + list(resnet_model.layer4[2].bn3.pa
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(params, lr=LR)
 
-print("finished training")
-
-
 def train(model, criterion, optimizer, epochs, trainloader, valloader):
 
     for epoch in epochs:
@@ -86,7 +87,12 @@ def train(model, criterion, optimizer, epochs, trainloader, valloader):
 
             if i % 2 == 1:
                 print("Epoch {} Train - Loss: {} ".format())
-        
+
+
+print("start training")
+train(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader)
+print("finished training")
+
 
 
 
