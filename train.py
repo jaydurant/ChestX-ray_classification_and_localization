@@ -18,7 +18,7 @@ train_transform = transforms.Compose([
     #transforms.RandomAdjustSharpness(sharpness_factor=0.75),
     transforms.RandomRotation(degrees=(0,180)),
     transforms.RandomInvert(),
-    transforms.PILToTensor()
+    transforms.ToTensor()
 ])
 
 testval_transform = transforms.Compose([
