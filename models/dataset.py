@@ -27,6 +27,7 @@ class XrayDataset(Dataset):
         sample = sample.convert("RGB")
         print(sample.mode)
 
+        print(self.transform)
         if self.transform:
             sample = self.transform(sample)
 
