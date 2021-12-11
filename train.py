@@ -48,6 +48,7 @@ num_classes = len(selected_labels)
 
 #access model
 resnet_model = Resnet50(num_classes)
+resnet_model.to(device)
 
 #use as feature extractor turn in function
 for param in resnet_model.parameters():
