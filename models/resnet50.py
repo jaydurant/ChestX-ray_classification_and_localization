@@ -13,6 +13,7 @@ class Resnet50(nn.Module):
             nn.AdaptiveAvgPool2d(output_size=(1,1)),
             nn.Linear(in_features=2048,out_features=n_classes, bias=True)
         )
+        self.fc = resnet.fc
         self.base_model = resnet
 
     def forward(self, x):
