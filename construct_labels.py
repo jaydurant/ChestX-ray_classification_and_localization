@@ -5,13 +5,18 @@ import os
 import ast
 import math
 from os.path import exists
-from models.selected_labels import selected_labels
+#from models.selected_labels import selected_labels
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
 parent_separator_1 = "├──"
 parent_separator_2 = "└──"
 
+selected_labels = ['aortic elongation', 'atelectasis', 'cardiomegaly', 'catheter' ,'copd signs'
+ ,'effusion', 'electrical device', 'emphysema' ,'heart insufficiency',
+ 'infiltration', 'mass', 'nodule', 'normal', 'nsg tube', 'other findings'
+ ,'pneumonia', 'pneumothorax', 'pulmonary edema', 'pulmonary fibrosis',
+ 'surgery', 'thoracic cage deformation', 'tuberculosis']
 
 pattern = '([a-z]+\s)+'
 
