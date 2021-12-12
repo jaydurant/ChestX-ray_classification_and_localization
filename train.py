@@ -31,7 +31,7 @@ testval_transform = transforms.Compose([
 
 EPOCHS = 1
 BATCH_SIZE = 20
-LR = 1e-4
+LR = 1e-2
 
 
 train_dataset = XrayDataset("./data", train, train_transform)
@@ -143,6 +143,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
             
             else:
                 prev_loss = val_loss_epoch
+                prev_loss = val_loss_epoch
                 prev_loss_arr.append(prev_loss)
             if val_loss_epoch < loss_best:
                 loss_best = val_loss_epoch
@@ -157,7 +158,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
     return model  
 
 print("start training")
-runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader)
+runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_model/")
 print("finished training")
 
 
@@ -187,4 +188,6 @@ def runtest(model, criterion, testloader, iters):
     print("Test Loss {}".format(test_loss / total_batches))
     time_to_train = time.time() - start
     print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
-    calculate_metrics(predict_arr, truth_arr)
+    metrics = calculate_metrics(predict_arr, truth_arr)
+    df = pd.DataFrame(metrics)
+    df.to_csv("./results.csv")
