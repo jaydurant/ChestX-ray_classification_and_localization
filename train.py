@@ -159,7 +159,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
     return model  
 
 print("start training")
-runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_model/saved_model.pth")
+runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_models/saved_model.pth")
 print("finished training")
 
 
