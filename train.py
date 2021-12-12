@@ -31,7 +31,7 @@ testval_transform = transforms.Compose([
 
 EPOCHS = 1
 BATCH_SIZE = 20
-LR = 1e-2
+LR = 8.11e-4
 
 
 train_dataset = XrayDataset("./data", train, train_transform)
@@ -145,7 +145,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
             prev_loss = val_loss_epoch
             prev_loss = val_loss_epoch
             prev_loss_arr.append(prev_loss)
-            
+
         if val_loss_epoch < loss_best:
             loss_best = val_loss_epoch
             best_val_weights = copy.deepcopy(model.state_dict())
@@ -159,7 +159,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
     return model  
 
 print("start training")
-runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_model/")
+runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_model/saved_model.pth")
 print("finished training")
 
 
