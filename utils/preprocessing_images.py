@@ -88,7 +88,7 @@ def resize_images(dir):
     for filename in os.listdir(dir):
         try:
             count += 1
-            print(count)
+            print(count, filename)
             img_path = os.path.join(dir, filename)
             img_obj = Image.open(img_path)
             resized_image = transform(img_obj)
