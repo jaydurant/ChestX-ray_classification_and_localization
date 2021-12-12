@@ -5,8 +5,6 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 from PIL import ImageFile
-from sklearn.preprocessing import MultiLabelBinarizer
-from models.selected_labels import selected_labels
 
 class XrayDataset(Dataset):
     def __init__(self,data_dir, data, transform=None):
