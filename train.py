@@ -113,8 +113,8 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
             train_loss_epoch += loss.item()
             training_loss += loss.item()
 
-            if iter % iters  == iters - 1:
-                print("Epoch {} Train Step {} - Loss: {} ".format(epoch + 1, iter + 1 , training_loss / iters))
+            if i % iters  == iters - 1:
+                print("Epoch {} Train Step {} - Loss: {} ".format(epoch + 1, i + 1 , training_loss / iters))
                 training_loss = 0.0
 
         print("Epoch {} Train  Final - Loss: {} ".format(epoch + 1, training_loss / train_batch_count))       
