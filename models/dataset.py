@@ -30,7 +30,7 @@ class XrayDataset(Dataset):
             sample = self.transform(sample)
         #print(type(sample))
         #print(sample)
-        return sample, sample_labels.float()
+        return sample, sample_labels.astype(float)
 
 
 
