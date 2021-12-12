@@ -16,7 +16,7 @@ curr_dir = os.getcwd()
  
 print(curr_dir)
 transform = transforms.Compose([
-   transforms.Resize((300,300))
+   transforms.Resize((150,150))
 ])
  
 def check_dir_exists(directory):
@@ -81,4 +81,20 @@ def download_process_images(bucket):
             os.remove(os.path.join(raw_data_path, f))
 
 bucket = "xray_samples"
-download_process_images(bucket)
+#download_process_images(bucket)
+
+def resize_images(dir):
+    count = 0
+    for filename in os.listdir(dir):
+        try:
+            count += 1
+            print(count)
+            img_path = os.path.join(dir, filename)
+            img_obj = Image.open(img_path)
+            resized_image = transform(img_obj)
+
+            resized_image.save(img_path, "PNG")
+        
+        except Exception as e:
+            print(e)
+            print(filename)

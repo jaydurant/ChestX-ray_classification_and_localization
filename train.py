@@ -2,12 +2,15 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from torch import optim
+import copy
+import time
 import torchvision.transforms as transforms
 from models.dataset import XrayDataset
 from torch.utils.data import DataLoader
 from construct_labels import generate_test_val_train_datasets
 from models.resnet50 import Resnet50
 from models.selected_labels import selected_labels
+from utils.metrics import calculate_metrics
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -27,8 +30,8 @@ testval_transform = transforms.Compose([
 
 
 EPOCHS = 20
-BATCH_SIZE = 10
-LR = 1e-3
+BATCH_SIZE = 20
+LR = 1e-4
 
 
 train_dataset = XrayDataset("./data", train, train_transform)
@@ -69,12 +72,34 @@ params = list(resnet_model.fc.parameters()) + list(resnet_model.layer4[2].bn3.pa
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(params, lr=LR)
 
-def train(model, criterion, optimizer, epochs, trainloader, valloader):
+#function used for early stopping
+def checkstop(arr):
+  stop = False
+  prev = arr[0]
+  for num in arr:
+    if num < prev:
+      return False
+    prev = num
+  return True
+
+def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, path, patience=2, iters=100):
+    start = time.time()
+    best_val_weights = copy.deepcopy(model.state_dict())
+    loss_best = 1000.0
+    train_loss_epoch = 0.0
+    prev_loss = 1000.0
+    prev_loss_arr = []
+    earlystopcount = patience + 1
 
     for epoch in range(epochs):
         training_loss = 0.0
         val_loss = 0.0
+        val_batch_count = 0.0
+        train_batch_count = 0.0
+        image_count = 0.0
 
+        #train
+        model.train()
         for i, data in enumerate(trainloader):
             inputs, labels = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
@@ -83,17 +108,83 @@ def train(model, criterion, optimizer, epochs, trainloader, valloader):
             loss = criterion(outputs, labels.float())
             loss.backward()
             optimizer.step()
-        
+            train_batch_count += 1.0
+            
+            train_loss_epoch += loss.item()
             training_loss += loss.item()
 
-            if i % 2 == 1:
-                print("Epoch {} Train Step {}- Loss: {} ".format(epoch + 1, i + 1 , training_loss / 2))
+            if iter % iters  == iters - 1:
+                print("Epoch {} Train Step {} - Loss: {} ".format(epoch + 1, iter + 1 , training_loss / iters))
                 training_loss = 0.0
 
+        print("Epoch {} Train  Final - Loss: {} ".format(epoch + 1, training_loss / train_batch_count))       
+        #run val
+        model.eval()
+        with torch.no_grad():
+            for i, data in enumerate(valloader):
+                inputs, labels = data[0].to(device), data[1].to(device)
+                outputs = model(inputs)
+                loss = criterion(outputs, labels.float())
+                val_loss += loss.item()
+                val_batch_count += 1
+
+            val_loss_epoch = val_loss / val_batch_count
+            print("Epoch {} Val - Loss{}".format(epoch + 1, val_loss_epoch))
+        
+        if val_loss_epoch >= prev_loss:
+            prev_loss = val_loss_epoch
+            prev_loss_arr.append(prev_loss)
+
+            if epoch != 0 and len(prev_loss_arr) >= earlystopcount and checkstop(prev_loss_arr[-earlystopcount:]):
+                time_to_train = time.time() - start
+                print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
+                print("Best Validation Loss Achieved {}".format(loss_best))
+                return model
+            
+            else:
+                prev_loss = val_loss_epoch
+                prev_loss_arr.append(prev_loss)
+            if val_loss_epoch < loss_best:
+                loss_best = val_loss_epoch
+                best_val_weights = copy.deepcopy(model.state_dict())
+                torch.save(best_val_weights, path)
+    time_to_train = time.time() - start
+    print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
+    print("Best Validation Loss Achieved {}".format(loss_best))
+
+    model.load_state_dict(best_val_weights)
+
+    return model  
+
 print("start training")
-train(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader)
+runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader)
 print("finished training")
 
 
+def runtest(model, criterion, testloader, iters):
+    predict_arr = []
+    truth_arr = []
+    test_loss = 0.0
+    start = time.time()
+    total_batches = 0.0
+    model.eval()
 
+    with torch.no_grad():
+        for i, data in enumerate(testloader):
+            total_batches += 1
+            inputs, labels = data[0].to(device), data[1].to(device)
+            outputs = model(inputs)
 
+            loss = criterion(outputs, labels.float())
+            test_loss += loss
+            probabilties = nn.Sigmoid(outputs)
+            predict_arr.extend(probabilties)
+            truth_arr.extend(labels.float())
+
+            if i % iters  == iters - 1:
+                print("Test Iter {}".format(i + 1))
+
+    print("Test Loss {}".format(test_loss / total_batches))
+    time_to_train = time.time() - start
+    print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
+    calculate_metrics(predict_arr, truth_arr)
