@@ -141,14 +141,15 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
                 print("Best Validation Loss Achieved {}".format(loss_best))
                 return model
             
-            else:
-                prev_loss = val_loss_epoch
-                prev_loss = val_loss_epoch
-                prev_loss_arr.append(prev_loss)
-            if val_loss_epoch < loss_best:
-                loss_best = val_loss_epoch
-                best_val_weights = copy.deepcopy(model.state_dict())
-                torch.save(best_val_weights, path)
+        else:
+            prev_loss = val_loss_epoch
+            prev_loss = val_loss_epoch
+            prev_loss_arr.append(prev_loss)
+            
+        if val_loss_epoch < loss_best:
+            loss_best = val_loss_epoch
+            best_val_weights = copy.deepcopy(model.state_dict())
+            torch.save(best_val_weights, path)
     time_to_train = time.time() - start
     print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
     print("Best Validation Loss Achieved {}".format(loss_best))
