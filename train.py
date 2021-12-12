@@ -25,11 +25,11 @@ train_transform = transforms.Compose([
 ])
 
 testval_transform = transforms.Compose([
-    transforms.PILToTensor()
+    transforms.ToTensor()
 ])
 
 
-EPOCHS = 5
+EPOCHS = 1
 BATCH_SIZE = 20
 LR = 1e-4
 
