@@ -8,7 +8,7 @@ class Resnet50(nn.Module):
         resnet = models.resnet50(pretrained=True)
         resnet.avgpool = nn.Identity()
         resnet.fc= nn.Sequential(
-            nn.Conv2d(2048,2048, 1),
+            #nn.Conv2d(2048,2048, 1),
             #nn.ReLU(),
             #nn.AdaptiveAvgPool2d(output_size=(1,1)),
             #nn.Linear(in_features=2048,out_features=n_classes, bias=True)
