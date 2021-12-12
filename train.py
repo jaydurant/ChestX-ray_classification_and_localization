@@ -82,8 +82,7 @@ def checkstop(arr):
     prev = num
   return True
 
-def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, path="./saved_modelsls
-", patience=2, iters=100):
+def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, path="./saved_modelsls", patience=2, iters=100):
     start = time.time()
     best_val_weights = copy.deepcopy(model.state_dict())
     loss_best = 1000.0
