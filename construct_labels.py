@@ -16,8 +16,8 @@ parent_separator_1 = "├──"
 parent_separator_2 = "└──"
 
 selected_labels = ['aortic elongation', 'atelectasis', 'cardiomegaly', 'catheter' ,'copd signs'
- ,'effusion', 'electrical device', 'emphysema' ,'heart insufficiency',
- 'infiltration', 'mass', 'nodule', 'normal', 'nsg tube', 'other findings'
+ ,'pleural effusion', 'electrical device', 'emphysema' ,'heart insufficiency',
+ 'infiltrates', 'mass', 'nodule', 'normal', 'other findings'
  ,'pneumonia', 'pneumothorax', 'pulmonary edema', 'pulmonary fibrosis',
  'surgery', 'thoracic cage deformation', 'tuberculosis']
 
