@@ -32,5 +32,32 @@ class XrayDataset(Dataset):
         #print(sample)
         return sample, sample_labels.astype(float)
 
+class XrayStratifiedDataset(Dataset):
+    def __init__(self,data_dir, x, y, transform=None):
+        
+        self.root_dir = data_dir
+        self.x = x
+        self.y = y
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+
+        img_path = os.path.join(self.root_dir, self.x[idx][0])
+        sample_labels = self.y[idx]
+        #print(sample_labels)
+        sample = Image.open(img_path)
+        sample = sample.convert("RGB")
+        #print(sample.mode)
+
+        #print(self.transform)
+        if self.transform:
+            sample = self.transform(sample)
+        #print(type(sample))
+        #print(sample)
+        return sample, sample_labels.astype(float)
+
 
 
