@@ -7,9 +7,9 @@ import copy
 import argparse
 import time
 import torchvision.transforms as transforms
-from models.dataset import XrayDataset
+from models.dataset import XrayDataset, XrayStratifiedDataset
 from torch.utils.data import DataLoader
-from construct_labels import generate_test_val_train_datasets
+from construct_labels import generate_test_val_train_datasets, generate_stratified_test_val_train_datasets
 from models.resnet50 import Resnet50
 from models.selected_labels import selected_labels
 from utils.metrics import calculate_metrics
@@ -22,9 +22,7 @@ from utils.metrics import calculate_metrics
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-train, val, test = generate_test_val_train_datasets("./padchest_img_labels.csv")
-
-test.to_csv("test.csv")
+trainx, trainy, testx, testy, valx, valy = generate_stratified_test_val_train_datasets("./padchest_img_labels.csv")
 
 train_transform = transforms.Compose([
     #transforms.RandomAdjustSharpness(sharpness_factor=0.75),
@@ -40,12 +38,12 @@ testval_transform = transforms.Compose([
 
 EPOCHS = 1
 BATCH_SIZE = 20
-LR = 8.11e-4
+LR = 6.58E-04
 
 
-train_dataset = XrayDataset("./data", train, train_transform)
-val_dataset = XrayDataset("./data", val, testval_transform)
-test_dataset = XrayDataset("./data", test, testval_transform)
+train_dataset = XrayDataset("./data", trainx, trainy, train_transform)
+val_dataset = XrayDataset("./data", valx, valy, testval_transform)
+test_dataset = XrayDataset("./data", testx, testy, testval_transform)
 
 trainloader = DataLoader(dataset=train_dataset, batch_size = BATCH_SIZE)
 valloader = DataLoader(dataset=val_dataset, batch_size = BATCH_SIZE)
