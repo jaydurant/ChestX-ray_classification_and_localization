@@ -41,7 +41,7 @@ class XrayStratifiedDataset(Dataset):
         self.transform = transform
 
     def __len__(self):
-        return len(self.dataset)
+        return len(self.x)
 
     def __getitem__(self, idx):
 
