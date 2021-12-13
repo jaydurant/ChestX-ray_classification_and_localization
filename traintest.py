@@ -14,10 +14,11 @@ from models.resnet50 import Resnet50
 from models.selected_labels import selected_labels
 from utils.metrics import calculate_metrics
 
-#parser = argparse.ArgumentParser(description='PyTorch X-ray classification model run')
+parser = argparse.ArgumentParser(description='PyTorch X-ray classification model run')
 
-#parser.add_argument("--is_training", type=int, default=1)
-#parser.add_argument("--")
+parser.add_argument("--is_training", type=int, default=1)
+parser.add_argument("--epochs",type=int, default=20)
+parset.add_argument("--")
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
