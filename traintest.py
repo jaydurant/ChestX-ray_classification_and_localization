@@ -41,9 +41,9 @@ BATCH_SIZE = 20
 LR = 6.58E-04
 
 
-train_dataset = XrayDataset("./data", trainx, trainy, train_transform)
-val_dataset = XrayDataset("./data", valx, valy, testval_transform)
-test_dataset = XrayDataset("./data", testx, testy, testval_transform)
+train_dataset = XrayStratifiedDataset("./data", trainx, trainy, train_transform)
+val_dataset = XrayStratifiedDataset("./data", valx, valy, testval_transform)
+test_dataset = XrayStratifiedDataset("./data", testx, testy, testval_transform)
 
 trainloader = DataLoader(dataset=train_dataset, batch_size = BATCH_SIZE)
 valloader = DataLoader(dataset=val_dataset, batch_size = BATCH_SIZE)
