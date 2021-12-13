@@ -199,7 +199,8 @@ def runtest(model, criterion, testloader, iters):
     time_to_train = time.time() - start
     print("Training Time {}min {}sec".format(time_to_train // 60, time_to_train % 60))
     metrics = calculate_metrics(np.array(predict_arr), np.array(truth_arr))
-    df = pd.DataFrame(metrics)
-    df.to_csv("./results.csv")
+    print(metrics)
+    #df = pd.DataFrame(metrics)
+    #df.to_csv("./results.csv")
 resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
 runtest(resnet_model, criterion, testloader, 100)
