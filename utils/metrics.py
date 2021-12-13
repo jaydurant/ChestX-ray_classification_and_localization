@@ -23,7 +23,7 @@ def calculate_metrics(pred, target, threshold=0.5):
 
             'samples/f1': f1_score(y_true=target, y_pred=threshpred, average='samples'),
 
-            "weighted/auc": roc_auc_score(y_true=target, y_score=pred, average="weighted"),
+            #"weighted/auc": roc_auc_score(y_true=target, y_score=pred, average="weighted"),
             
-            "samples/auc": roc_auc_score(y_true=target, y_score=pred, average="samples")
+            #"samples/auc": roc_auc_score(y_true=target, y_score=pred, average="samples")
 }
