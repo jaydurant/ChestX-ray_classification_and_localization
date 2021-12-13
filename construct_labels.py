@@ -4,10 +4,13 @@ import re
 import os
 import ast
 import math
+import numpy as np
 from os.path import exists
 #from models.selected_labels import selected_labels
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
+from skmultilearn.model_selection import iterative_train_test_split
+
 
 parent_separator_1 = "├──"
 parent_separator_2 = "└──"
@@ -113,3 +116,32 @@ def generate_test_val_train_datasets(file):
     
     return (train, val, test)
 
+def generate_stratified_test_val_train_datasets(file):
+    df = pd.read_csv(file)
+    df['Labels'] = df['Labels'].str.strip('[]').str.replace("'", "").str.split(',')
+    mlb = MultiLabelBinarizer()
+    mlb.fit([selected_labels])
+
+    for row_index in df.index:
+        new_labels = []
+        labels = df.at[row_index, "Labels"]
+        #print(row_index, type(labels))
+        if type(labels) != list and math.isnan(labels):
+            labels = ['normal']
+
+        for label in labels:
+            label = label.strip()
+            new_labels.append(label)
+
+
+        binary_labels = mlb.transform([new_labels])[0]
+        df.at[row_index, "Labels"] = binary_labels
+    Xlen = len(df["ImageID"])
+    y = np.array(df["Labels"].tolist())
+    X = np.array(df["ImageId"].tolist()).reshape((Xlen,1))
+    X_trainval, y_trainval, X_test, y_test = iterative_train_test_split(X, y, test_size=0.1, random_staet=1)
+    X_train, y_train, X_val, y_val = iterative_train_test_split(X_trainval, y_trainval, test_size=0.1, random_state=1)
+    
+    print("Finished  building train, val, and test sets")
+    
+    return (X_train, y_train, X_test, y_test, X_val, y_val)
