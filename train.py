@@ -179,8 +179,9 @@ def runtest(model, criterion, testloader, iters):
 
             loss = criterion(outputs, labels.float())
             test_loss += loss
-            probabilties = nn.Sigmoid(outputs)
-            predict_arr.extend(probabilties)
+            sig = nn.Sigmoid()
+            probs = sig(outputs)
+            predict_arr.extend(probs)
             truth_arr.extend(labels.float())
 
             if i % iters  == iters - 1:
