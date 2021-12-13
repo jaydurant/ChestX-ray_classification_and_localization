@@ -138,7 +138,7 @@ def generate_stratified_test_val_train_datasets(file):
         df.at[row_index, "Labels"] = binary_labels
     Xlen = len(df["ImageID"])
     y = np.array(df["Labels"].tolist())
-    X = np.array(df["ImageId"].tolist()).reshape((Xlen,1))
+    X = np.array(df["ImageID"].tolist()).reshape((Xlen,1))
     X_trainval, y_trainval, X_test, y_test = iterative_train_test_split(X, y, test_size=0.1, random_staet=1)
     X_train, y_train, X_val, y_val = iterative_train_test_split(X_trainval, y_trainval, test_size=0.1, random_state=1)
     
