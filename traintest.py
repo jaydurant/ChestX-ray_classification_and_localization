@@ -24,6 +24,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 train, val, test = generate_test_val_train_datasets("./padchest_img_labels.csv")
 
+test.to_csv("test.csv")
 
 train_transform = transforms.Compose([
     #transforms.RandomAdjustSharpness(sharpness_factor=0.75),
