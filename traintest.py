@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(description='PyTorch X-ray classification model
 
 parser.add_argument("--is_training", type=int, default=1)
 parser.add_argument("--epochs",type=int, default=20)
-#parser.add_argument("--")
+parser.add_argument("--")
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -167,7 +167,7 @@ def runtrainval(model, criterion, optimizer, epochs, trainloader, valloader, pat
     return model  
 
 print("start training")
-#runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_models/saved_model.pth")
+runtrainval(resnet_model, criterion, optimizer, EPOCHS, trainloader, valloader, path="./saved_models/saved_model.pth")
 print("finished training")
 
 
@@ -204,5 +204,5 @@ def runtest(model, criterion, testloader, iters):
     print(metrics)
     #df = pd.DataFrame(metrics)
     #df.to_csv("./results.csv")
-resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
-runtest(resnet_model, criterion, testloader, 100)
+#resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
+#runtest(resnet_model, criterion, testloader, 100)
