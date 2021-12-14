@@ -51,25 +51,27 @@ def edit_labels_csv_file_padchest(annontated_image_csv_file, label_csv_file ):
     df['Labels'] = df['Labels'].str.strip('[]').str.replace("'", "").str.split(',')
     label_dict, _ = generate_label_map(label_csv_file)
     drop_rows = []
-
+    #print(label_dict)
     for row_index in df.index:
         #print(row_index)
         new_labels = []
         row_labels = df.at[row_index, "Labels"]
         #print(row_labels)
-
+        
+        
         image_path = df.at[row_index, "ImageID"]
         print(os.path.join("./data", image_path))
         print(exists(os.path.join("./data", image_path)))
         if not exists(os.path.join("./data", image_path)):
-            print("hello")
+            #print("hello")
             drop_rows.append(row_index)
 
         if not isinstance(row_labels, list):
             continue
         for label in row_labels:
-            label = label.strip()
-            #Check if label is in label map and ifSSS there is a parent
+            label = label.strip().lower()
+
+            #Check if label is in label map and if there is a parent
             if label in label_dict and label_dict[label]:
                 label = label_dict[label]
 
@@ -79,7 +81,7 @@ def edit_labels_csv_file_padchest(annontated_image_csv_file, label_csv_file ):
         if len(new_labels) == 0:
             new_labels = ["other findings"]
         
-        df.at[row_index, "Labels"] = new_labels
+        df.at[row_index, "Labels"] = list(set(new_labels))
     print(drop_rows,"drop rows")
     df = df.drop(labels=drop_rows, axis=0)
     
