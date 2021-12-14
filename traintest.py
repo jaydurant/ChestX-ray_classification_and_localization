@@ -11,6 +11,8 @@ from models.dataset import XrayDataset, XrayStratifiedDataset
 from torch.utils.data import DataLoader
 from construct_labels import generate_test_val_train_datasets, generate_stratified_test_val_train_datasets
 from models.resnet50 import Resnet50
+from models.vgg16 import VGG16
+from models.densenet import DenseNet
 from models.selected_labels import selected_labels
 from utils.metrics import calculate_metrics
 
@@ -85,6 +87,40 @@ if args.model == "resnet":
     params = list(resnet_model.fc.parameters()) + list(resnet_model.layer4[2].bn3.parameters()) + list(resnet_model.layer4[2].conv3.parameters())
     model = resnet_model
 #end feature extractor
+
+if args.model == "vgg":
+    vgg_model = VGG16(num_classes)
+    vgg_model.to(device)
+
+    for param in vgg_model.parameters():
+        param.requires_grad = False
+    
+    for name, param in vgg_model.named_parameters():
+        if "features.28" in name:
+            param.requires_grad = True
+        if "classifier" in name:
+            param.requires_grad = True
+    
+    params = list(vgg_model.classifier.parameters()) + list(vgg_model.features[28].parameters())
+    model = vgg_model
+
+if args.model == "desenet": 
+    dense_model = DenseNet(num_classes)
+    dense_model.to(device)
+
+
+    for param in dense_model.parameters():
+        param.requires_grad = False
+    
+    for name, param in dense_model.named_parameters():
+        if "features.denseblock4.denselayer16.conv2" in name:
+            param.requires_grad = True
+        if "features.norm5" in name:
+            param.requires_grad = True
+        if "classifier" in name:
+            param.requires_grad = True
+    params = list(dense_model.classifier.parameters()) + list(dense_model.features.norm5.parameters()) + list(dense_model.features.denseblock4.denselayer16.conv2.parameters())
+    model = dense_model
 
 
 criterion = nn.BCEWithLogitsLoss()
