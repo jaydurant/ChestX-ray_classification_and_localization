@@ -189,6 +189,8 @@ def runtest(model, criterion, testloader, iters):
             test_loss += loss
             sig = nn.Sigmoid()
             probs = sig(outputs)
+            if i == 0:
+                print(probs)
             predict_arr.extend(probs.cpu().numpy())
             truth_arr.extend(labels.cpu().numpy())
 
