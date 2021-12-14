@@ -60,8 +60,8 @@ def edit_labels_csv_file_padchest(annontated_image_csv_file, label_csv_file ):
         
         
         image_path = df.at[row_index, "ImageID"]
-        print(os.path.join("./data", image_path))
-        print(exists(os.path.join("./data", image_path)))
+        #print(os.path.join("./data", image_path))
+        #print(exists(os.path.join("./data", image_path)))
         if not exists(os.path.join("./data", image_path)):
             #print("hello")
             drop_rows.append(row_index)
