@@ -5,6 +5,8 @@ def calculate_metrics(pred, target, threshold=0.5):
 
     threshpred = np.array(pred > threshold, dtype=float)
 
+    print(threshpred)
+
     return {'micro/precision': precision_score(y_true=target, y_pred=threshpred, average='micro'),
 
             'micro/recall': recall_score(y_true=target, y_pred=threshpred, average='micro'),
