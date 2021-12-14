@@ -202,5 +202,5 @@ def runtest(model, criterion, testloader, iters):
     print(metrics)
     #df = pd.DataFrame(metrics)
     #df.to_csv("./results.csv")
-resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
-runtest(resnet_model, criterion, testloader, 100)
+#resnet_model.load_state_dict(torch.load("./saved_models/saved_model.pth"))
+#runtest(resnet_model, criterion, testloader, 100)
