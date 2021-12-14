@@ -37,7 +37,8 @@ testval_transform = transforms.Compose([
 ])
 
 
-EPOCHS = 1
+EPOCHS = 5
+EPOCHS = 5
 BATCH_SIZE = 20
 LR = 6.58E-04
 
